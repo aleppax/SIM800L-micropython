@@ -135,6 +135,7 @@ class Modem(object):
                     'initurl':    {'string':'AT+HTTPPARA="URL","{}"'.format(data), 'timeout':3, 'end': 'OK'},
                     'doget':      {'string':'AT+HTTPACTION=0', 'timeout':3, 'end': '+HTTPACTION'},
                     'setcontent': {'string':'AT+HTTPPARA="CONTENT","{}"'.format(data), 'timeout':3, 'end': 'OK'},
+                    'setapikey':  {'string':'AT+HTTPPARA="X-API-Key","{}"'.format(data), 'timeout':3, 'end': 'OK'},
                     'postlen':    {'string':'AT+HTTPDATA={},5000'.format(data), 'timeout':3, 'end': 'DOWNLOAD'},  # "data" is data_lenght in this context, while 5000 is the timeout
                     'dumpdata':   {'string':data, 'timeout':1, 'end': 'OK'},
                     'dopost':     {'string':'AT+HTTPACTION=1', 'timeout':3, 'end': '+HTTPACTION'},
@@ -351,7 +352,7 @@ class Modem(object):
             raise Exception('Error, we should be disconnected but we still have an IP address ({})'.format(ip_addr))
 
 
-    def http_request(self, url, mode='GET', data=None, content_type='application/json'):
+    def http_request(self, url, mode='GET', data=None, content_type='application/json', apikey=None):
 
         # Protocol check.
         assert url.startswith('http'), 'Unable to handle communication protocol for URL "{}"'.format(url)
@@ -397,6 +398,9 @@ class Modem(object):
             logger.debug('Response status code: "{}"'.format(response_status_code))
 
         elif mode == 'POST':
+
+            logger.debug('Http request step #2.2 (setapikey)')
+            self.execute_at_command('setapikey', apikey)
 
             logger.debug('Http request step #2.2 (setcontent)')
             self.execute_at_command('setcontent', content_type)
