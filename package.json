@@ -1,0 +1,7 @@
+{
+  "urls": [
+    ["SIM800L.py", "github:aleppax/SIM800L-micropython/SIM800L.py"]
+  ],
+  "version": "1.0.0",
+  "deps": []
+}
